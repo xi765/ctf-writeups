@@ -1,6 +1,8 @@
-> [!TIP] Initial hints
-> `10.49.189.92    fortress`
-> `10.49.189.92    temple.fortress`
+> [!TIP]
+> Hints from the CTF description:
+> 
+> * `10.49.189.92    fortress` 
+> * `10.49.189.92    temple.fortress`
 
 # 1. Initial Scanning
 
@@ -24,7 +26,7 @@ PORT    STATE SERVICE VERSION
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
-> [!NOTE] TCP port scan summary
+> [!NOTE]
 > * **Port 22/tcp** Open SSH 7.2p2 running
 > * **Observations:** OS is Ubuntu 
 
@@ -85,7 +87,7 @@ PORT     STATE SERVICE VERSION
 |_http-server-header: Apache/2.4.18 (Ubuntu)
 ```
 
-> [!NOTE] Summary
+> [!NOTE]
 >- **Port 5581/tcp** running FTP vsftp 3.0.3 **Anonymous login enabled**
 >- **Port 7331/tcp** running Apache httpd 2.4.18
 >- **Port 5752/tcp** unrecognized service asking for credentials
@@ -128,7 +130,7 @@ PORT    STATE          SERVICE
 68/udp open|filtered dhcpc
 ```
 
-> [!NOTE] UDP port scan summary
+> [!NOTE]
 > - Only dhcpc open in **port 68/udp**, not very relevant.
 
 # 2. Service Enumeration
@@ -183,7 +185,7 @@ Username: 1337-h4x0r
 Password: n3v3r_g0nn4_g1v3_y0u_up
 ```
 
-> [!NOTE] Summary
+> [!NOTE]
 > We find credentials for port 5752 service:
 > - Username: 1337-h4x0r
 > - Password: n3v3r_g0nn4_g1v3_y0u_up
@@ -330,7 +332,7 @@ We use built-in enumeration techniques to map the system:
 
 During manual recon, we find `data/setup.sh`. This file appears to be a leftover configuration script containing flags and passwords.
 
-> [!IMPORTANT] Unintended Path vs Intended Path
+> [!IMPORTANT]
 > While `data/setup.sh` contains the answers, we proceed with the intended exploitation method to break the restricted shell properly.
 
 **Escaping RBash**
@@ -376,7 +378,7 @@ We find a log entry where a password was changed via command line:
 
 We now have the password for `j4x0n`. We check `sudo -l` for this user and find they have full sudo access.
 
-> [!IMPORTANT] Root Flag
+> [!IMPORTANT]
 > We verify root access and retrieve the final flag:
 > ```bash
 > sudo su
