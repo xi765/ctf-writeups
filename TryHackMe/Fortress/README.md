@@ -1,4 +1,4 @@
-> [!hint] Initial hints
+> [!TIP] Initial hints
 > `10.49.189.92    fortress`
 > `10.49.189.92    temple.fortress`
 
@@ -24,7 +24,7 @@ PORT    STATE SERVICE VERSION
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
-> [!summary] TCP port scan summary
+> [!NOTE] TCP port scan summary
 > * **Port 22/tcp** Open SSH 7.2p2 running
 > * **Observations:** OS is Ubuntu 
 
@@ -85,7 +85,7 @@ PORT     STATE SERVICE VERSION
 |_http-server-header: Apache/2.4.18 (Ubuntu)
 ```
 
-> [!summary] Summary
+> [!NOTE] Summary
 >- **Port 5581/tcp** running FTP vsftp 3.0.3 **Anonymous login enabled**
 >- **Port 7331/tcp** running Apache httpd 2.4.18
 >- **Port 5752/tcp** unrecognized service asking for credentials
@@ -112,7 +112,7 @@ Password: root
 Errr... Authentication failed
 ```
 
-> [!summary]
+> [!NOTE]
 > We find a customized port that asks for credentials to log-in. We try with root:root but it fails.
 
 ## 1.2 UDP Scan
@@ -128,7 +128,7 @@ PORT    STATE          SERVICE
 68/udp open|filtered dhcpc
 ```
 
-> [!summary] UDP port scan summary
+> [!NOTE] UDP port scan summary
 > - Only dhcpc open in **port 68/udp**, not very relevant.
 
 # 2. Service Enumeration
@@ -183,7 +183,7 @@ Username: 1337-h4x0r
 Password: n3v3r_g0nn4_g1v3_y0u_up
 ```
 
-> [!summary] Summary
+> [!NOTE] Summary
 > We find credentials for port 5752 service:
 > - Username: 1337-h4x0r
 > - Password: n3v3r_g0nn4_g1v3_y0u_up
@@ -203,7 +203,7 @@ nc -nv 10.49.189.92 5752
 After entering the credentials found in `file.pyc`, the service responds:
 `t3mple_0f_y0ur_51n5`
 
-> [!summary]
+> [!NOTE]
 > We retrieve the string `t3mple_0f_y0ur_51n5`. This looks like a hidden directory or a password. We will use this for further web enumeration.
 
 ## 2.3 HTTP Apache server in port 7331
@@ -227,12 +227,12 @@ private.php          (Status: 200) [Size: 0]
 server-status        (Status: 403) [Size: 275]
 ```
 
-> [!summary]
+> [!NOTE]
 > Nothing interesting here, just standard Apache noise.
 
 ### 2.3.2 Subdomain/VHost Scan
 
-> [!hint]
+> [!TIP]
 > We already know the subdomain `temple.fortress` from the CTF description.
 
 **Scan with known string**
@@ -241,7 +241,7 @@ Recalling the string `t3mple_0f_y0ur_51n5` found in the backdoor service (Port 5
 
 We verify the existence of `http://temple.fortress:7331/t3mple_0f_y0ur_51n5.php`.
 
-> [!check]
+> [!IMPORTANT]
 > We confirm that `t3mple_0f_y0ur_51n5.php` exists.
 > Additionally, we inspect the source code of the main page and find a reference to `/t3mpl3_0f_y0ur_51n5.html`, which contains the PHP source code for the login logic.
 
@@ -305,7 +305,7 @@ if h1 == h2 and user_bin != pass_bin:
         print(f"Error: {e}")
 ```
 
-> [!check]
+> [!IMPORTANT]
 > The script works and we get the next hint: `m0td_f0r_j4x0n.txt`
 > We access this file and retrieve the **SSH private key for h4rdy**.
 
@@ -330,7 +330,7 @@ We use built-in enumeration techniques to map the system:
 
 During manual recon, we find `data/setup.sh`. This file appears to be a leftover configuration script containing flags and passwords.
 
-> [!check] Unintended Path vs Intended Path
+> [!IMPORTANT] Unintended Path vs Intended Path
 > While `data/setup.sh` contains the answers, we proceed with the intended exploitation method to break the restricted shell properly.
 
 **Escaping RBash**
@@ -376,7 +376,7 @@ We find a log entry where a password was changed via command line:
 
 We now have the password for `j4x0n`. We check `sudo -l` for this user and find they have full sudo access.
 
-> [!check] Root Flag
+> [!IMPORTANT] Root Flag
 > We verify root access and retrieve the final flag:
 > ```bash
 > sudo su
