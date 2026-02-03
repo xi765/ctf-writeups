@@ -26,7 +26,7 @@ PORT   STATE SERVICE VERSION
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
->[!summary]
+>[!NOTE]
 > * **Port 22/tcp:** OpenSSH 9.6p1
 > * **Port 80/tcp:** Apache httpd 2.4.58 (Target 0S: Ubuntu)
 
@@ -44,7 +44,7 @@ PORT   STATE SERVICE
 80/tcp open  http
 ```
 
->[!check]
+>[!IMPORTANT]
 >The full scan confirms that only SSH and an apache HTTP server are exposed on the target machine.
 ## 1.2 UDP Scan
 
@@ -61,7 +61,7 @@ PORT   STATE         SERVICE
 68/udp open|filtered dhcpc
 ```
 
->[!summary]
+>[!NOTE]
 > Only **port 68/udp (DHCPC)**  is open. This is standard for network configuration and likely irrelevant to the challenge.
 
 # 2. Service Enumeration
@@ -113,7 +113,7 @@ status.php           (Status: 200) [Size: 4086]
 
 The scan found the endpoints we already mapped during the manual scan and some additional configuration files. We also ran an additional scan with `directory-list-lowercase-2.3-medium.txt` but it didn't return any new directory.
 
->[!summary]
+>[!NOTE]
 > - **WAF Detected:** Direct access to configuration files (`php.ini`, `app.conf`) triggers a **403 Forbidden** response.
 > - `logs/error.log` is accessible and contains sensitive debugging information.
 > 
@@ -128,7 +128,7 @@ We analyzed the `error.log` file, which revealed critical details about the appl
 [Sat Nov 08 12:13:55.888902 2025] [warn] [modsec:41004] [client 10.10.84.212:53210] Double-encoded sequence observed (possible bypass attempt)
 ```
 
->[!check]
+>[!IMPORTANT]
 >-  **Target Identified**: The logs explicitly mention a parsing error for `admin_info` located in `/var/www/html/config/app.conf`. This confirms the file path and suggests it contains sensitive credentials.
 >
 > - **WAF Identification:** The tags `[modsec:...]` confirm the server is protected by **ModSecurity**.
@@ -154,12 +154,12 @@ http://10.48.171.12/live.php?page=config/app%2Econf
 version = "1.4.2" enable_live_feed = true enable_signup = true env = "staging" site_name = "Padelify Tournament Portal" max_players_per_team = 4 maintenance_mode = false log_level = "INFO" log_retention_days = 30 db_path = "padelify.sqlite" admin_info = "bL}8,S9W1o44" misc_note = "do not expose to production" support_email = "support@padelify.thm" build_hash = "a1b2c3d4" 
 ```
 
->[!check]
+>[!IMPORTANT]
 >Successfully reading `app.conf` revealed sensitive configuration details, including potential credentials in the `admin_info` field: `bL}8,S9W1o44`
 >
 >Using these credentials (`admin:bL}8,S9W1o44`), we logged into the dashboard and retrieved the **Admin Flag**.
 
->[!fail]
+>[!CAUTION]
 >- **SSTI:** We observed input reflection in `/register.php` (level/game_type) but payloads were sanitized via HTML Entity Encoding.
 
 ## 3.2 Cross-Site Scriptng (XSS) via WAF bypass
@@ -182,7 +182,7 @@ To bypass this, we constructed a payload using **String Concatenation** to hide 
 </script>
 ```
 
->[!tip]
+>[!IMPORTANT]
 >- We registered a new user with the payload above as the **Username**.    
 >- We started a custom Python server (`server.py`) configured to handle POST and OPTIONS (CORS) requests.  
 >- Upon the Moderator bot reviewing the registration, our server received the `PHPSESSID`.
