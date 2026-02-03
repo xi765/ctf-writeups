@@ -26,7 +26,7 @@ PORT   STATE SERVICE VERSION
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
->[!summary] TCP port scan summary
+>[!summary]
 > * **Port 22/tcp:** OpenSSH 9.6p1
 > * **Port 80/tcp:** Apache httpd 2.4.58 (Target 0S: Ubuntu)
 
@@ -61,7 +61,7 @@ PORT   STATE         SERVICE
 68/udp open|filtered dhcpc
 ```
 
->[!summary] UDP port scan summary
+>[!summary]
 > Only **port 68/udp (DHCPC)**  is open. This is standard for network configuration and likely irrelevant to the challenge.
 
 # 2. Service Enumeration
@@ -128,7 +128,7 @@ We analyzed the `error.log` file, which revealed critical details about the appl
 [Sat Nov 08 12:13:55.888902 2025] [warn] [modsec:41004] [client 10.10.84.212:53210] Double-encoded sequence observed (possible bypass attempt)
 ```
 
->[!check] Key Findings
+>[!check]
 >-  **Target Identified**: The logs explicitly mention a parsing error for `admin_info` located in `/var/www/html/config/app.conf`. This confirms the file path and suggests it contains sensitive credentials.
 >
 > - **WAF Identification:** The tags `[modsec:...]` confirm the server is protected by **ModSecurity**.
@@ -159,7 +159,7 @@ version = "1.4.2" enable_live_feed = true enable_signup = true env = "staging" s
 >
 >Using these credentials (`admin:bL}8,S9W1o44`), we logged into the dashboard and retrieved the **Admin Flag**.
 
->[!fail] Other approaches tried
+>[!fail]
 >- **SSTI:** We observed input reflection in `/register.php` (level/game_type) but payloads were sanitized via HTML Entity Encoding.
 
 ## 3.2 Cross-Site Scriptng (XSS) via WAF bypass
@@ -182,7 +182,7 @@ To bypass this, we constructed a payload using **String Concatenation** to hide 
 </script>
 ```
 
->[!tip] Execution
+>[!tip]
 >- We registered a new user with the payload above as the **Username**.    
 >- We started a custom Python server (`server.py`) configured to handle POST and OPTIONS (CORS) requests.  
 >- Upon the Moderator bot reviewing the registration, our server received the `PHPSESSID`.
